@@ -1,0 +1,32 @@
+GET http://localhost:1337/api/musiques
+
+###
+GET http://localhost:1337/api/interpretes
+
+###
+POST http://localhost:1337/api/interpretes
+Content-Type: application/json
+
+{
+  "data": {
+    "nom": "Bellakath",
+    "prenom": "",
+    "naissance": "1998-10-05"
+  }
+}
+
+
+###
+POST http://localhost:1337/api/musiques
+Content-Type: application/json
+
+{
+    "data": {
+        "title": "Reggaeton Champagne",
+        "link": "https://www.youtube.com/watch?v=h6qbOjac8qo",
+        "interpretes": 2,
+        "favorite": true,
+        "release": "2023-10-25",
+        "color": "170F11"
+    }
+}
