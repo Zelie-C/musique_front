@@ -30,3 +30,6 @@ Content-Type: application/json
         "color": "170F11"
     }
 }
+
+###
+GET http://localhost:1337/api/musiques?populate=*

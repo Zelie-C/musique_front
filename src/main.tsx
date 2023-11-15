@@ -1,21 +1,26 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import Connexion from './Connexion.tsx'
-
+import Connexion from './routes/Connexion'
+import './index.css'
+import Home from './routes/Home'
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />
+    element: <Connexion />
   },
-  {
-    path: "/home",
-    element: <Home />
-  }
   {
     path: "/connexion",
     element: <Connexion />
+  },
+  {
+    path: '/home/',
+    element: <Home />
+  },
+  {
+    path: '/home/:username',
+    element: <Home />
   }
 ])
 
