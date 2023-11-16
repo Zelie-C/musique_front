@@ -1,45 +1,47 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+interface IMusic {
+    data: [
+        {
+            id: number,
+            attributes: {
+                title: string,
+                link: string,
+                favorite: boolean,
+                release: string,
+                color: string,
+                createdAt: string,
+                updateAt: string,
+                publishedAt: string,
+                interpretes: {
+                    data: [
+                        {
+                        id: number,
+                        attributes: {
+                            nom: string,
+                            prenom: string | null,
+                            naissance: string,
+                            createdAt: string,
+                            updateAt: string,
+                            publishedAt: string,
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
+
 const Home = () => {
     const navigate = useNavigate()
     const params = useParams();
-    const [musicData, setMusicData] = useState([]);
+    const [musicData, setMusicData] = useState<IMusic[]>([]);
     const [favoriteMusic, setFavoriteMusic] = useState([]);
     const [sortedMusic, setSortedMusic] = useState([]);
 
-    interface IMusic {
-        data: [
-            {
-                id: number,
-                attributes: {
-                    title: string,
-                    link: string,
-                    favorite: boolean,
-                    release: string,
-                    color: string,
-                    createdAt: string,
-                    updateAt: string,
-                    publishedAt: string,
-                    interpretes: {
-                        data: [
-                            {
-                            id: number,
-                            attributes: {
-                                nom: string,
-                                prenom: string | null,
-                                naissance: string,
-                                createdAt: string,
-                                updateAt: string,
-                                publishedAt: string,
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-        ]
-    }
+
 
     useEffect(
         () => {
@@ -59,19 +61,28 @@ const Home = () => {
         musicUserRequest();
     }, [])
 
-    useEffect(
-        () => {
-            let fav = musicData.filter(
-                (music: any) =>
-                    music.favorite === true)
-                console.log("var:", fav)
-            setFavoriteMusic(fav);
-            console.log('fav:', favoriteMusic)
-        }, [musicData])
 
     useEffect(
         () => {
-            const musicAlphaSort = async () => {
+            const favMusicRequest = async () => {
+                try {
+                    const response = await fetch('http://localhost:1337/api/musiques?populate=*&filters[favorite][$eq]=true');
+                    const data = await response.json();
+                    const favMusic = data.data.map(
+                        (favMusic: any) => ({...favMusic.attributes})
+                        )
+                    setFavoriteMusic(favMusic)
+                } catch(error) {
+                    console.error('Erreur', error);
+                }
+            }
+            favMusicRequest()
+    }, [])
+
+
+    useEffect(
+        () => {
+            const musicAlphaSortRequest = async () => {
                 try {
                     const response = await fetch('http://localhost:1337/api/musiques?populate=*&sort=title:asc');
                     const data = await response.json();
@@ -84,9 +95,13 @@ const Home = () => {
                     
                 }
             }
-            musicAlphaSort();
-    }, [sortedMusic])
+            musicAlphaSortRequest();
+    }, [])
     
+    const handleAddBtnClick = () => {
+        navigate('/add');
+    }
+
     const handleCardClick = () => {
         navigate
     }
@@ -95,14 +110,15 @@ const Home = () => {
         <>
             <div>
                 <div className="title-container">
-                    <h1>Hello {params.username}</h1>
+                    <h1>Hello <span className="username-display">{params.username}</span></h1>
+                    <button className="add-btn" onClick={handleAddBtnClick}>+</button>
                 </div>
                 <div className="favorite-music cards-container">
                     <h2>Musiques préférées</h2>
                     <div className="row">
                     {favoriteMusic.map(
                         (favMusic: any) => (
-                            <div key={favMusic.id} className="card" onClick={handleCardClick}>
+                            <div key={favMusic.id} className="card" onClick={handleCardClick} style={{backgroundColor: favMusic.color, color: "white"}}>
                                 <h3>{favMusic.title}</h3>
                                 {favMusic.interpretes.data.map(
                                     (interprete: any) => (
@@ -120,7 +136,7 @@ const Home = () => {
                     <div className="row">
                         {sortedMusic.map(
                             (sorted: any) => (
-                                <div key={sorted.id} className="card" onClick={handleCardClick}>
+                                <div key={sorted.id} className="card" onClick={handleCardClick} style={{backgroundColor: sorted.color, color: "white"}}>
                                     <h3>{sorted.title}</h3>
                                     {sorted.interpretes.data.map(
                                         (interprete: any) => (

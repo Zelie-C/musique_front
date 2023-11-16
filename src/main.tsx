@@ -4,6 +4,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import Connexion from './routes/Connexion'
 import './index.css'
 import Home from './routes/Home'
+import AddSong from './routes/AddSong'
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: '/home/:username',
     element: <Home />
+  },
+  {
+    path: '/add',
+    element: <AddSong />
   }
 ])
 

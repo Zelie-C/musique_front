@@ -54,7 +54,7 @@ const Connexion = () => {
                     <input type="text" name="username" onChange={handleUsernameChange}/>
                     <label htmlFor="password">Password</label>
                     <input type="password" name="password" onChange={handlePasswordChange}/>
-                    <button onClick={handleConnexionClick}>Se connecter</button>
+                    <button onClick={handleConnexionClick} className="connexion-btn">Se connecter</button>
                 </div>
             </div>
         </>

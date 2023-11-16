@@ -1,7 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;1,400&display=swap');
 
-
+* {
+    font-family: 'Poppins', sans-serif;
+}
 .connexion-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+}
+
+.title-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1em;
+}
+
+.add-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-form {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -29,7 +53,7 @@ input {
     border-radius: 1em;
 }
 
-button {
+.connexion-btn {
     background-color: white;
     border: 1px solid black;
     border-radius: 1em;
@@ -41,3 +65,11 @@ button {
     width: 20%;
     border-radius: 1em;
 }
+
+.add-btn {
+    background-color: rgb(110, 21, 194);
+    color: white;
+    border-radius: 3em;
+    height: 15%;
+}
+
