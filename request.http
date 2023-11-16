@@ -24,7 +24,7 @@ Content-Type: application/json
     "data": {
         "title": "Reggaeton Champagne",
         "link": "https://www.youtube.com/watch?v=h6qbOjac8qo",
-        "interpretes": 2,
+        "interpretes": 1,
         "favorite": true,
         "release": "2023-10-25",
         "color": "170F11"
@@ -32,4 +32,23 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:1337/api/musiques?populate=*
+POST http://localhost:1337/api/musiques
+Content-Type: application/json
+
+{
+    "data": {
+        "title": "Baticano",
+        "link": "https://www.youtube.com/watch?v=QCqc3k0Tzbs",
+        "interpretes": 2,
+        "favorite": false,
+        "release": "2023-03-10",
+        "color": "170F11"
+    }
+}
+
+###
+GET http://localhost:1337/api/musiques?populate=*&sort=title:asc
+
+###
+GET http://localhost:1337/api/musiques?populate=*&filters[favorite][$eq]=false
+

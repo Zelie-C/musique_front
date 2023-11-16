@@ -4,8 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 const Home = () => {
     const navigate = useNavigate()
     const params = useParams();
-    const [musicData, setMusicData] = useState([])
-    const [artistData, setArtistData] = useState([])
+    const [musicData, setMusicData] = useState([]);
+    const [favoriteMusic, setFavoriteMusic] = useState([]);
+    const [sortedMusic, setSortedMusic] = useState([]);
 
     interface IMusic {
         data: [
@@ -40,7 +41,8 @@ const Home = () => {
         ]
     }
 
-    useEffect(() => {
+    useEffect(
+        () => {
         const musicUserRequest = async () => {
             try {
             const response = await fetch('http://localhost:1337/api/musiques?populate=*');
@@ -56,6 +58,34 @@ const Home = () => {
         }
         musicUserRequest();
     }, [])
+
+    useEffect(
+        () => {
+            let fav = musicData.filter(
+                (music: any) =>
+                    music.favorite === true)
+                console.log("var:", fav)
+            setFavoriteMusic(fav);
+            console.log('fav:', favoriteMusic)
+        }, [musicData])
+
+    useEffect(
+        () => {
+            const musicAlphaSort = async () => {
+                try {
+                    const response = await fetch('http://localhost:1337/api/musiques?populate=*&sort=title:asc');
+                    const data = await response.json();
+                    const alphaSort = data.data.map(
+                        (musicSorted: any) => ({...musicSorted.attributes})
+                    )
+                    setSortedMusic(alphaSort);
+                } catch(error) {
+                    console.error('Erreur', error);
+                    
+                }
+            }
+            musicAlphaSort();
+    }, [sortedMusic])
     
     const handleCardClick = () => {
         navigate
@@ -70,18 +100,34 @@ const Home = () => {
                 <div className="favorite-music cards-container">
                     <h2>Musiques préférées</h2>
                     <div className="row">
-                    {musicData.map(
-                        (data: any) => (
-                            <div key={data.id} className="card" onClick={handleCardClick} style={{backgroundColor: data.color}}>
-                                <h3>{data.title}</h3>
-
-                                {data.interpretes.data.map(
+                    {favoriteMusic.map(
+                        (favMusic: any) => (
+                            <div key={favMusic.id} className="card" onClick={handleCardClick}>
+                                <h3>{favMusic.title}</h3>
+                                {favMusic.interpretes.data.map(
                                     (interprete: any) => (
                                         <h4 key={interprete.id}>{interprete.attributes.nom}</h4>
-                                    )
-                                )}
+                                    ))
+                                }
                             </div>
-                        ))}
+                        ))
+                    }
+                    
+                    </div>
+                </div>
+                <div className="others-music cards-container">
+                    <h2>Toutes les musiques</h2>
+                    <div className="row">
+                        {sortedMusic.map(
+                            (sorted: any) => (
+                                <div key={sorted.id} className="card" onClick={handleCardClick}>
+                                    <h3>{sorted.title}</h3>
+                                    {sorted.interpretes.data.map(
+                                        (interprete: any) => (
+                                            <h4 key={interprete.id}>{interprete.attributes.nom}</h4>
+                                        ))}
+                                </div>
+                            ))}
                     </div>
                 </div>
             </div>
