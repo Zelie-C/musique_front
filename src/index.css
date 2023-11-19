@@ -68,6 +68,13 @@ input {
     padding: 1em;
 }
 
+.update-btn {
+    background-color: white;
+    border: 0;
+    border-radius: 0.5em;
+    
+}
+
 .input-form {
   margin-bottom: 2em;
 }

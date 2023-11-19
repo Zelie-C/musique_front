@@ -57,3 +57,6 @@ GET http://localhost:1337/api/interpretes?populate=nom
 
 ###
 GET http://localhost:1337/api/interpretes
+
+###
+GET http://localhost:1337/api/musiques?filters[id][$eq]=1

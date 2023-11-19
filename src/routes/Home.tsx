@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 interface IMusic {
@@ -40,6 +40,7 @@ const Home = () => {
     const [musicData, setMusicData] = useState<IMusic[]>([]);
     const [favoriteMusic, setFavoriteMusic] = useState([]);
     const [sortedMusic, setSortedMusic] = useState([]);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
 
 
 
@@ -102,15 +103,29 @@ const Home = () => {
         navigate('/add');
     }
 
-    const handleCardClick = () => {
-        navigate
-    }
+    const handleCardClick = useCallback(
+        async (id: number) => {
+            setSelectedId(id);
+            try {
+                const response = await fetch(`http://localhost:1337/api/musiques?filters[id][$eq]=${selectedId}`)
+                const data = await response.json()
+                console.log('API Response:', data);
+                console.log(data)
+                if (data.data && data.data.attributes) {
+                window.open(data.data.attributes.link, "_blank")
+                } else {
+                    console.error('pas de données')
+                }
+            } catch(error) {
+                console.error('Erreur:', error);
+            }
+    }, [selectedId])
 
     return (
         <>
             <div>
                 <div className="title-container">
-                    <h1>Hello <span className="username-display">{params.username}</span></h1>
+                    <h1>Hello {params.username}</h1>
                     <button className="add-btn" onClick={handleAddBtnClick}>+</button>
                 </div>
                 <div className="favorite-music cards-container">
@@ -118,13 +133,14 @@ const Home = () => {
                     <div className="row">
                     {favoriteMusic.map(
                         (favMusic: any) => (
-                            <div key={favMusic.id} className="card" onClick={handleCardClick} style={{backgroundColor: favMusic.color, color: "white"}}>
+                            <div key={favMusic.id} className="card" onClick={() => handleCardClick(favMusic.id)} style={{backgroundColor: favMusic.color, color: "white"}}>
                                 <h3>{favMusic.title}</h3>
                                 {favMusic.interpretes.data.map(
                                     (interprete: any) => (
                                         <h4 key={interprete.id}>{interprete.attributes.nom}</h4>
                                     ))
                                 }
+                                <button className="update-btn">Mettre à jour</button>
                             </div>
                         ))
                     }
@@ -136,12 +152,13 @@ const Home = () => {
                     <div className="row">
                         {sortedMusic.map(
                             (sorted: any) => (
-                                <div key={sorted.id} className="card" onClick={handleCardClick} style={{backgroundColor: sorted.color, color: "white"}}>
+                                <div key={sorted.id} className="card" onClick={() => handleCardClick(sorted.id)} style={{backgroundColor: sorted.color, color: "white"}}>
                                     <h3>{sorted.title}</h3>
                                     {sorted.interpretes.data.map(
                                         (interprete: any) => (
                                             <h4 key={interprete.id}>{interprete.attributes.nom}</h4>
                                         ))}
+                                    <button className="update-btn">Mettre à jour</button>
                                 </div>
                             ))}
                     </div>
