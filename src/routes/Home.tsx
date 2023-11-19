@@ -92,12 +92,12 @@ const Home = () => {
                     setSortedMusic(alphaSort);
                 } catch(error) {
                     console.error('Erreur', error);
-                    
+
                 }
             }
             musicAlphaSortRequest();
     }, [])
-    
+
     const handleAddBtnClick = () => {
         navigate('/add');
     }
@@ -128,7 +128,7 @@ const Home = () => {
                             </div>
                         ))
                     }
-                    
+
                     </div>
                 </div>
                 <div className="others-music cards-container">

@@ -57,4 +57,3 @@ GET http://localhost:1337/api/interpretes?populate=nom
 
 ###
 GET http://localhost:1337/api/interpretes
-

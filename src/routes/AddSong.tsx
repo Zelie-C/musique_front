@@ -1,25 +1,35 @@
 import React, { useCallback, useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+
+export interface IArtist {
+  id: number,
+  attributes: {
+    nom: string,
+    prenom: string | null,
+    naissance: string,
+    createdAt: string,
+    updatedAt: string,
+    publishedAt: string,
+  }
+}
 
 const AddSong = () => {
-
-    const [artist, setArtist] = useState([])
+    const navigate = useNavigate();
+    const [artist, setArtist] = useState<IArtist[]>([])
     const [selectedArtist, setSelectedArtist] = useState<number>(0)
     const [song, setSong] = useState("")
     const [color, setColor] = useState("")
-    const [date, setDate] = useState<Date>()
+    const [date, setDate] = useState<string>("")
     const [link, setLink] = useState("")
     const [favorite, setFavorite] = useState<boolean>(false)
-    
+
     useEffect(
         () => {
             const allPerformerRequest = async () => {
                 try {
                     const response = await fetch('http://localhost:1337/api/interpretes?populate=nom')
                     const data = await response.json()
-                    const dataArtist = data.data.map(
-                        (artist: any) => ({...artist.attributes}) 
-                    )
-                    setArtist(dataArtist);
+                    setArtist(data.data);
                 } catch(error) {
                     console.log('Erreur', error)
                 }
@@ -28,7 +38,7 @@ const AddSong = () => {
         }, [])
 
     const handleArtistChange = useCallback(
-        (e: React.ChangeEvent<HTMLOptionElement>) => {
+        (e: React.ChangeEvent<HTMLSelectElement>) => {
             setSelectedArtist(parseInt(e.target.value))
         }, [])
 
@@ -44,9 +54,9 @@ const AddSong = () => {
 
     const handleDateChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
-            const newDate = new Date(e.target.value)
-            setDate(newDate)
-    }, [])
+            setDate(e.target.value)
+            console.log(date)
+    }, [date])
 
     const handleLinkChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,9 +67,8 @@ const AddSong = () => {
         (e: React.ChangeEvent<HTMLInputElement>) => {
             setFavorite(e.target.checked)
         }, [])
-    
-    const handleAddSongClick = async () => {
-        try {
+
+    const handleAddSongClick = useCallback(async () => {
             const response = await fetch('http://localhost:1337/api/musiques', {
                 method: "POST",
                 headers: {
@@ -67,45 +76,52 @@ const AddSong = () => {
                 },
                 body: JSON.stringify({
                     "data": {
-                        "title": {song},
-                        "link": {link},
-                        "interpretes": [selectedArtist],
-                        "favorite": {favorite},
-                        "release": {date},
-                        "color": {color}
+                        "title": song,
+                        "link": link,
+                        "interpretes": selectedArtist,
+                        "favorite": favorite,
+                        "release": date,
+                        "color": color
                     }
                 })
             });
             const data = await response.json()
-        } catch(error) {
-            console.log('Erreur', error)
+            if (data.data.id){
+            navigate('/home/')
+            } else {
+            setSelectedArtist(0)
+            setSong('')
+            setColor('')
+            setDate('')
+            setLink('')
+            setFavorite(false)
         }
-    }
-    
+    }, [selectedArtist, song, color, date, favorite, link, navigate])
+
     return (
         <>
             <div className="add-container">
                 <h1>Ajouter une chanson</h1>
                 <div className="add-form">
                     <label htmlFor="performer"></label>
-                    <select name="performer">
+                    <select name="performer" onChange={handleArtistChange}>
                         <option value="default">Selectionner un ou une interprète</option>
                         {artist.map(
                             (artist: any) => (
-                                <option value={artist.id} onChange={handleArtistChange}>{artist.nom}</option>
+                                <option key={artist.id} value={artist.id}>{artist.id} - {artist.attributes.nom}</option>
                             ))}
                     </select>
                     <label htmlFor="chanson">Nom de la chanson</label>
-                    <input type="text" name="chanson" onChange={handleSongChange}/>
-                    <label htmlFor="color"></label>
-                    <input type="color" name="color" onChange={handleColorChange}/>
-                    <label htmlFor="date"></label>
-                    <input type="date" name="date" onChange={handleDateChange}/>
+                    <input type="text" name="chanson" onChange={handleSongChange} className="input-form"/>
+                    <label htmlFor="color">Couleur de la chanson</label>
+                    <input type="color" name="color" onChange={handleColorChange} className="input-form input-color"/>
+                    <label htmlFor="date">Date de sortie</label>
+                    <input type="date" name="date" value={date} onChange={handleDateChange} className="input-form"/>
                     <label htmlFor="link">Lien de la chanson</label>
-                    <input type="text" name="link" onChange={handleLinkChange}/>
+                    <input type="text" name="link" onChange={handleLinkChange} className="input-form"/>
                     <div className="checkbox-container">
                     <label htmlFor="checkbox">Favori</label>
-                    <input type="checkbox" name="checkbox" checked={favorite} onChange={handleFavoriteChange}/>
+                    <input type="checkbox" name="checkbox" checked={favorite} onChange={handleFavoriteChange} className="input-form"/>
                     </div>
                     <button onClick={handleAddSongClick}>Ajouter</button>
                 </div>

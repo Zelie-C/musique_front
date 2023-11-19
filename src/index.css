@@ -36,7 +36,8 @@
 .row {
     display: flex;
     flex-direction: row;
-    height: 20vh;
+    gap: 1em;
+    height: 30vh;
 }
 
 h1 {
@@ -64,6 +65,15 @@ input {
 .card {
     width: 20%;
     border-radius: 1em;
+    padding: 1em;
+}
+
+.input-form {
+  margin-bottom: 2em;
+}
+
+.input-color {
+  width: 50%;
 }
 
 .add-btn {
@@ -72,4 +82,3 @@ input {
     border-radius: 3em;
     height: 15%;
 }
-
