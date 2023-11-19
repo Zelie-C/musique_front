@@ -87,14 +87,14 @@ const AddSong = () => {
             });
             const data = await response.json()
             if (data.data.id){
-            navigate('/home/')
-            } else {
-            setSelectedArtist(0)
-            setSong('')
-            setColor('')
-            setDate('')
-            setLink('')
-            setFavorite(false)
+              navigate('/home/')
+              } else {
+              setSelectedArtist(0)
+              setSong('')
+              setColor('')
+              setDate('')
+              setLink('')
+              setFavorite(false)
         }
     }, [selectedArtist, song, color, date, favorite, link, navigate])
 
