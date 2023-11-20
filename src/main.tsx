@@ -5,6 +5,7 @@ import Connexion from './routes/Connexion'
 import './index.css'
 import Home from './routes/Home'
 import AddSong from './routes/AddSong'
+import Update from './routes/Update'
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,14 @@ const router = createBrowserRouter([
   {
     path: '/add',
     element: <AddSong />
+  },
+  {
+    path: '/update',
+    element: <Update />
+  },
+  {
+    path: '/update/:id',
+    element: <Update />
   }
 ])
 

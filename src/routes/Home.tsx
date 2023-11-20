@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-interface IMusic {
+export interface IMusic {
             id: number,
             attributes: {
                 title: string,
@@ -36,7 +36,6 @@ const Home = () => {
     const params = useParams();
     const [favoriteMusic, setFavoriteMusic] = useState<IMusic[]>([]);
     const [sortedMusic, setSortedMusic] = useState<IMusic[]>([]);
-    //const [selectedId, setSelectedId] = useState<number | null>(null);
 
 
     useEffect(
@@ -86,6 +85,11 @@ const Home = () => {
             }
     }, [])
 
+    const handleUpdateBtn = useCallback(
+      (id: number) => {
+        navigate(`/update/${id}`)
+      }, [navigate])
+
     return (
         <>
             <div>
@@ -105,7 +109,7 @@ const Home = () => {
                                         <h4 key={interprete.id}>{interprete.attributes.nom}</h4>
                                     ))
                                 }
-                                <button className="update-btn">Mettre à jour</button>
+                                <button className="update-btn" onClick={(e) => {e.stopPropagation(); handleUpdateBtn(favMusic.id)}}>Mettre à jour</button>
                             </div>
                         ))
                     }
@@ -123,7 +127,7 @@ const Home = () => {
                                         (interprete: any) => (
                                             <h4 key={interprete.id}>{interprete.attributes.nom}</h4>
                                         ))}
-                                    <button className="update-btn">Mettre à jour</button>
+                                    <button className="update-btn" onClick={(e) => {e.stopPropagation(); handleUpdateBtn(sorted.id)}}>Mettre à jour</button>
                                 </div>
                             ))}
                     </div>
