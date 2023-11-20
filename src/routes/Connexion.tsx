@@ -18,9 +18,9 @@ const Connexion = () => {
         (e: React.ChangeEvent<HTMLInputElement>) => {
             setPassword(e.target.value)
         }, []
-    ) 
+    )
 
-    
+
 
     const handleConnexionClick = useCallback(
         async () => {
@@ -36,20 +36,21 @@ const Connexion = () => {
                     })
                 });
                 const data = await response.json()
+                console.log(data)
                 navigate("/home/" + username)
             } catch (error) {
                 console.error('Erreur lors de la requête:', error);
-                
+
             }
-        }, [username, password])
-   
+        }, [username, password, navigate])
+
     return (
         <>
             <div className="connexion-container">
                 <div>
                     <h1>Connexion</h1>
                 </div>
-                <div className="container ">
+                <div className="connexion-container">
                     <label htmlFor="username">Login</label>
                     <input type="text" name="username" onChange={handleUsernameChange}/>
                     <label htmlFor="password">Password</label>
