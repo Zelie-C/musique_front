@@ -2,8 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 interface IMusic {
-    data: [
-        {
             id: number,
             attributes: {
                 title: string,
@@ -11,9 +9,6 @@ interface IMusic {
                 favorite: boolean,
                 release: string,
                 color: string,
-                createdAt: string,
-                updateAt: string,
-                publishedAt: string,
                 interpretes: {
                     data: [
                         {
@@ -27,40 +22,21 @@ interface IMusic {
                             publishedAt: string,
                             }
                         }
-                    ]
+                      ]
+                createdAt: string,
+                updateAt: string,
+                publishedAt: string,
                 }
             }
-        }
-    ]
+
 }
 
 const Home = () => {
     const navigate = useNavigate()
     const params = useParams();
-    const [musicData, setMusicData] = useState<IMusic[]>([]);
-    const [favoriteMusic, setFavoriteMusic] = useState([]);
-    const [sortedMusic, setSortedMusic] = useState([]);
-    const [selectedId, setSelectedId] = useState<number | null>(null);
-
-
-
-    useEffect(
-        () => {
-        const musicUserRequest = async () => {
-            try {
-            const response = await fetch('http://localhost:1337/api/musiques?populate=*');
-            const data = await response.json();
-            const musicData = data.data.map(
-                (music: any) => ({...music.attributes, id: music.id})
-            )
-            setMusicData(musicData)
-            console.log("state", musicData)
-            } catch(error) {
-                console.error('Erreur', error);
-            }
-        }
-        musicUserRequest();
-    }, [])
+    const [favoriteMusic, setFavoriteMusic] = useState<IMusic[]>([]);
+    const [sortedMusic, setSortedMusic] = useState<IMusic[]>([]);
+    //const [selectedId, setSelectedId] = useState<number | null>(null);
 
 
     useEffect(
@@ -69,10 +45,7 @@ const Home = () => {
                 try {
                     const response = await fetch('http://localhost:1337/api/musiques?populate=*&filters[favorite][$eq]=true');
                     const data = await response.json();
-                    const favMusic = data.data.map(
-                        (favMusic: any) => ({...favMusic.attributes})
-                        )
-                    setFavoriteMusic(favMusic)
+                    setFavoriteMusic(data.data)
                 } catch(error) {
                     console.error('Erreur', error);
                 }
@@ -87,10 +60,7 @@ const Home = () => {
                 try {
                     const response = await fetch('http://localhost:1337/api/musiques?populate=*&sort=title:asc');
                     const data = await response.json();
-                    const alphaSort = data.data.map(
-                        (musicSorted: any) => ({...musicSorted.attributes})
-                    )
-                    setSortedMusic(alphaSort);
+                    setSortedMusic(data.data);
                 } catch(error) {
                     console.error('Erreur', error);
 
@@ -105,21 +75,16 @@ const Home = () => {
 
     const handleCardClick = useCallback(
         async (id: number) => {
-            setSelectedId(id);
+
             try {
-                const response = await fetch(`http://localhost:1337/api/musiques?filters[id][$eq]=${selectedId}`)
+                const response = await fetch(`http://localhost:1337/api/musiques/${id}`)
                 const data = await response.json()
-                console.log('API Response:', data);
-                console.log(data)
-                if (data.data && data.data.attributes) {
-                window.open(data.data.attributes.link, "_blank")
-                } else {
-                    console.error('pas de données')
-                }
+                window.location.href = data.data.attributes.link
+
             } catch(error) {
                 console.error('Erreur:', error);
             }
-    }, [selectedId])
+    }, [])
 
     return (
         <>
@@ -132,10 +97,10 @@ const Home = () => {
                     <h2>Musiques préférées</h2>
                     <div className="row">
                     {favoriteMusic.map(
-                        (favMusic: any) => (
-                            <div key={favMusic.id} className="card" onClick={() => handleCardClick(favMusic.id)} style={{backgroundColor: favMusic.color, color: "white"}}>
-                                <h3>{favMusic.title}</h3>
-                                {favMusic.interpretes.data.map(
+                        (favMusic) => (
+                            <div key={favMusic.id} className="card" onClick={() => handleCardClick(favMusic.id)} style={{backgroundColor: favMusic.attributes.color, color: "white"}}>
+                                <h3>{favMusic.attributes.title}</h3>
+                                {favMusic.attributes.interpretes.data.map(
                                     (interprete: any) => (
                                         <h4 key={interprete.id}>{interprete.attributes.nom}</h4>
                                     ))
@@ -151,10 +116,10 @@ const Home = () => {
                     <h2>Toutes les musiques</h2>
                     <div className="row">
                         {sortedMusic.map(
-                            (sorted: any) => (
-                                <div key={sorted.id} className="card" onClick={() => handleCardClick(sorted.id)} style={{backgroundColor: sorted.color, color: "white"}}>
-                                    <h3>{sorted.title}</h3>
-                                    {sorted.interpretes.data.map(
+                            (sorted) => (
+                                <div key={sorted.id} className="card" onClick={() => handleCardClick(sorted.id)} style={{backgroundColor: sorted.attributes.color, color: "white"}}>
+                                    <h3>{sorted.attributes.title}</h3>
+                                    {sorted.attributes.interpretes.data.map(
                                         (interprete: any) => (
                                             <h4 key={interprete.id}>{interprete.attributes.nom}</h4>
                                         ))}
